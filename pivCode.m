@@ -13,9 +13,9 @@
 clear all
 clc;
 %Reach each frame, remove mean and min
-im1raw = imread("c000a.bmp");
+im1raw = imread("zoe_maggie_piv_500fps_2000ss_04_02_2024_1_C001H001S0001000303.bmp");
 im1sub = im1raw - mean(im1raw,'all')-min(min(im1raw));
-im2raw = imread("c000b.bmp");
+im2raw = imread("zoe_maggie_piv_500fps_2000ss_04_02_2024_1_C001H001S0001000305.bmp");
 im2sub = im2raw - mean(im2raw,'all')-min(min(im2raw));
 %Hanning Window
 [m,n,~] = size(im1sub);
