@@ -4,17 +4,18 @@ clc
 
 %Begin with first two frames
 
-%Read image pair
-image_a = im2double(imread('c000a.bmp'));
-image_b = im2double(imread('c000b.bmp'));
+%Read image pair 
+image_a = im2double(imread('500fps_1000ss_rehaan_maggie_C001H001S0001000050.bmp'));
+image_b = im2double(imread('500fps_1000ss_rehaan_maggie_C001H001S0001000051.bmp'));
 
 %Subtract average intensity
 image_a = image_a - mean(image_a,'all'); 
 image_b = image_b - mean(image_b,'all');
 
 %Select IA size (recommended 64x64 or 48x48)
-image_size = sqrt(numel(image_a)); %in pixels, assuming square image
-IA_size = 48; %in pixels
+image_dimensions = size(image_a); %in pixels, assuming square image
+image_size = image_dimensions(1);
+IA_size = 64; %in pixels
 IA_overlap = IA_size*0.25; 
 
 %Setting floor to zero
@@ -37,7 +38,12 @@ for i = 1:(image_size-IA_size)/IA_overlap+1
         window_a = image_a(1+(i-1)*IA_overlap: (i-1)*IA_overlap+IA_size, 1+(j-1)*IA_overlap: (j-1)*IA_overlap+IA_size).*window;
         window_b = image_b(1+(i-1)*IA_overlap: (i-1)*IA_overlap+IA_size, 1+(j-1)*IA_overlap: (j-1)*IA_overlap+IA_size).*window;
         correlation = normxcorr2(window_a, window_b);
-  
+        % 
+        % %Normalize the correlation
+        % ACFTbl1 = autocorr(window_a,10);
+        % ACFTbl2 = autocorr(window_b,10);
+        % correlation = correlation/(sqrt(ACFTbl1 * ACFTbl2));
+        % 
         [x, y] = ndgrid((-IA_size + 1):(IA_size - 1));
         interpolation = griddedInterpolant(x, y, correlation,'spline');
         [peaks, value] = fminsearch(@(f) -interpolation(f(1), f(2)), [0, 0]);
@@ -112,8 +118,14 @@ parameter = "Enter '1' to run all image pairs: ";
 run = input(parameter);
 
 if run==1
-folderpath='/Users/mageean/Documents/MATLAB/experimental-fluids-PIV/pivCodeRehaan/experimental-data';
+folder = '/Users/mageean/Documents/MATLAB/experimental-fluids-PIV/experimental_data';
+f =dir([folder '/*.bmp']);
+n = length(f); %calculate number of files
+pairs = n/2;
 
+%Loop over all image pairs
+for i =1:pairs
+end
 %Read image pair
 image_a = im2double(imread('c000a.bmp'));
 image_b = im2double(imread('c000b.bmp'));
